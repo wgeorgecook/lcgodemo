@@ -45,14 +45,14 @@ func parseApiKey() string {
 	return os.Getenv("API_KEY")
 }
 
-func InitLLM(p Provider, ctx context.Context, keyOrModel string) (llms.Model, error) {
+func InitLLM(p Provider, ctx context.Context, apiKey string) (llms.Model, error) {
 	switch p {
 	case google:
-		return lc.InitGoogleAI(ctx, keyOrModel)
+		return lc.InitGoogleAI(ctx, apiKey)
 	case openai:
-		return lc.InitOpenAI(keyOrModel)
+		return lc.InitOpenAI(apiKey)
 	case ollama:
-		return lc.InitOllama(ctx, keyOrModel)
+		return lc.InitOllama(ctx, "gemma:7b")
 	default:
 		return nil, new(errNoProviderError)
 	}

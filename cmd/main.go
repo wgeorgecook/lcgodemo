@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 
 	"lcgodemo/internal/config"
@@ -12,6 +11,8 @@ import (
 )
 
 func main() {
+	log.Println("Hello!")
+	defer log.Println("goodbye!	")
 	provider, apiKey := config.ParseEnv()
 	llm, err := config.InitLLM(provider, context.TODO(), apiKey)
 	if err != nil {
@@ -23,5 +24,5 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(completion)
+	log.Println(completion)
 }
