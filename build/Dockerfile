@@ -16,6 +16,9 @@ RUN go build -o lcgodemo cmd/main.go
 # Use alpine base for final image
 FROM alpine:latest
 
+# Install dependencies for reading PDFs
+RUN apk add poppler-utils
+
 # Create a non-root user to run the app
 RUN adduser -D apprunner
 
