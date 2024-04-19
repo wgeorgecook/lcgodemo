@@ -16,13 +16,6 @@ func ReadFromFile(ctx context.Context) ([]string, error) {
 		return nil, err
 	}
 
-	text, err := pdf.Text()
-	if err != nil {
-		return nil, err
-	}
-
-	log.Println(text)
-
 	pages, err := pdf.Pages()
 
 	if err != nil {
