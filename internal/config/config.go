@@ -42,7 +42,7 @@ func determineProvider() Provider {
 }
 
 func parseApiKey() string {
-	return os.Getenv("API_KEY")
+	return os.Getenv("OPENAI_API_KEY")
 }
 
 func InitLLM(p Provider, ctx context.Context, apiKey string) (llms.Model, error) {
