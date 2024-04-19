@@ -39,9 +39,8 @@ func initEmbedder() error {
 	return nil
 }
 
-func EmbedChunked	Document(ctx context.Context, texts []string) ([][]float32, error) {
+func EmbedChunkedDocument(ctx context.Context, texts []string) ([]float32, error) {
 	log.Println("start embed chunked documents")
-	log.Printf("texts: %v\n", texts)
 	if err := initEmbedder(); err != nil {
 		return nil, err
 	}
@@ -50,7 +49,7 @@ func EmbedChunked	Document(ctx context.Context, texts []string) ([][]float32, er
 		return nil, err
 	}
 	log.Println("embed done!")
-	return vectors, nil
+	return vectors[0], nil
 }
 
 func EmbedQuery(ctx context.Context, query string) ([]float32, error) {
