@@ -23,14 +23,16 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// level 1: connect to LLM and prompt it for an output
+	// connect to LLM and prompt it for an output
 	ctx := context.Background()
-	prompt := "What would be a good company name for a company that makes colorful socks? " + rag.LoadGroundingContext()
-	completion, err := llms.GenerateFromSinglePrompt(ctx, llm, prompt)
-	if err != nil {
-		log.Fatal(err)
+	if os.Getenv("PROMPT_FIRST") != "" {
+		prompt := "What would be a good company name for a company that makes colorful socks? " + rag.LoadGroundingContext()
+		completion, err := llms.GenerateFromSinglePrompt(ctx, llm, prompt)
+		if err != nil {
+			log.Fatal(err)
+		}
+		log.Println(completion)
 	}
-	log.Println(completion)
 
 	// connect to Weaviate
 	log.Println("connecting to Weaviate")
@@ -39,31 +41,29 @@ func main() {
 	}
 
 	log.Println("getting schema")
-	schema, err := vectors.GetSchema()
+	_, err = vectors.GetSchema()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	log.Printf("schema: %+v", schema)
-
-	data, err := vectors.GetData(ctx)
+	res, err := vectors.QueryData(ctx, 1)
 	if err != nil {
 		panic(err)
 	}
-	log.Printf("queriedData: %+v\n", data)
 
-	generatedData, err := vectors.QueryData(context.Background(), os.Getenv("QUERY_STRING"))
-	if err != nil {
-		panic(err)
-	}
-	if len(data.Errors) != 0 {
-		for _, err := range data.Errors {
-			log.Printf("errors in generating data: %v\n", err)
+	if len(res) == 0 {
+		if err := vectors.InsertData(ctx); err != nil {
+			panic(err)
 		}
-	} else {
-		log.Printf("generated data: %+v\n", generatedData)
+
 	}
 
+	generatedData, err := vectors.GenerativeSearch(context.Background(), os.Getenv("QUERY_STRING"), llm)
+	if err != nil {
+		panic(err)
+	}
+
+	log.Println(generatedData)
 	log.Println("all done!")
 
 }
